@@ -1,9 +1,11 @@
 // Leçons : une technique par écran, en mots simples.
 // term : comment on l'écrit dans les modèles. Montré seulement APRÈS que la leçon est apprise.
-// Vidéo : videos/<id>.mp4 dans le dépôt (voir videos/README.md).
+// Vidéo : videos/<id>.mp4 dans le dépôt si elle existe (voir videos/README.md),
+// sinon la vidéo YouTube indiquée par « youtube » (identifiant après « watch?v= »).
 export const LESSONS = [
   {
     id: 'cast-on',
+    youtube: 'mRyAM0eLjJw', // Tutoriel Tricot Débutant, leçon 2 : montage simple
     term: { fr: 'monter', en: 'CO' },
     fr: {
       name: 'Monter les mailles',
@@ -30,6 +32,7 @@ export const LESSONS = [
   },
   {
     id: 'knit',
+    youtube: 'sgCk7lwW2mQ', // Tutoriel Tricot Débutant, leçon 3 : la maille endroit
     term: { fr: 'm. end.', en: 'k' },
     fr: {
       name: 'Maille endroit',
@@ -56,6 +59,7 @@ export const LESSONS = [
   },
   {
     id: 'garter',
+    youtube: 'M8du_FqQQkM', // Tricot débutant : comment tricoter le point mousse
     term: { fr: 'pt mousse', en: 'garter st' },
     fr: {
       name: 'Point mousse',
@@ -82,6 +86,7 @@ export const LESSONS = [
   },
   {
     id: 'bind-off',
+    youtube: 'oRp-Y33ZYZA', // Tutoriel Tricot Débutant, leçon 5 : rabattre et rentrer les fils
     term: { fr: 'rab.', en: 'BO' },
     fr: {
       name: 'Rabattre les mailles',
@@ -108,6 +113,7 @@ export const LESSONS = [
   },
   {
     id: 'weave-ends',
+    youtube: 'oRp-Y33ZYZA', // Tutoriel Tricot Débutant, leçon 5 : rabattre et rentrer les fils
     term: { fr: 'rentrer les fils', en: 'weave in ends' },
     fr: {
       name: 'Cacher les bouts de fil',
@@ -134,6 +140,7 @@ export const LESSONS = [
   },
   {
     id: 'purl',
+    youtube: 's6F-wqwmCts', // Tutoriel Tricot Débutant, leçon 4 : la maille envers
     term: { fr: 'm. env.', en: 'p' },
     fr: {
       name: 'Maille envers',
@@ -160,6 +167,7 @@ export const LESSONS = [
   },
   {
     id: 'rib-2x2',
+    youtube: 'Ep5JYheQCOc', // Apprendre le tricot : les côtes 2/2
     term: { fr: 'côtes 2/2', en: 'k2, p2 rib' },
     fr: {
       name: 'Côtes 2/2',
@@ -186,6 +194,7 @@ export const LESSONS = [
   },
   {
     id: 'new-ball',
+    youtube: 'Thd29uCM144', // Comment changer de pelote
     term: { fr: 'changer de pelote', en: 'join new yarn' },
     fr: {
       name: 'Changer de pelote',
@@ -212,6 +221,7 @@ export const LESSONS = [
   },
   {
     id: 'dropped',
+    youtube: 'SI0YHZdlqEE', // Rattraper une maille perdue avec un crochet
     term: { fr: 'maille filée', en: 'dropped stitch' },
     fr: {
       name: 'Rattraper une maille tombée',
@@ -238,6 +248,7 @@ export const LESSONS = [
   },
   {
     id: 'stockinette',
+    youtube: 's-tSFBw7j-4', // La maille envers et le point jersey
     term: { fr: 'jersey', en: 'St st' },
     fr: {
       name: 'Jersey',
@@ -264,6 +275,7 @@ export const LESSONS = [
   },
   {
     id: 'k2tog',
+    youtube: 'I6gtGl5sKwU', // Débuter le tricot : 2 mailles ensemble à l’endroit
     term: { fr: '2 m. ens.', en: 'k2tog' },
     fr: {
       name: 'Diminuer : 2 mailles ensemble',
@@ -290,6 +302,7 @@ export const LESSONS = [
   },
   {
     id: 'seaming',
+    youtube: 'p3PfoN3chEs', // Couture invisible au point de matelas
     term: { fr: 'assemblage', en: 'mattress st' },
     fr: {
       name: 'Coudre deux bords',

@@ -1,6 +1,11 @@
 # Vidéos des leçons
 
-Mettez ici une courte vidéo par leçon. L'application la joue automatiquement, **au ralenti et en boucle**.
+Chaque leçon montre déjà une **vidéo YouTube** (au ralenti, en boucle). Il faut internet pour la voir.
+Pour changer de vidéo YouTube : dans `js/data/lessons.js`, remplacez l'identifiant après `youtube:`
+(c'est la fin du lien YouTube, après `watch?v=`).
+
+Pour remplacer une vidéo YouTube par votre propre vidéo (qui marche aussi **sans internet**),
+mettez-la dans ce dossier. Elle passe alors avant la vidéo YouTube.
 
 ## Noms des fichiers
 

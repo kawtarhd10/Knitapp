@@ -73,7 +73,7 @@ Knitapp/
 
 ### Phase 2: Learning ✅ done (v1.1.0)
 
-5. **One technique per screen (Les leçons / الدروس)**: 12 lessons, big numbered steps, a slow looping video and a "Revoir" (show me again) button. The pattern abbreviation (for example *m. end.*) stays hidden until she taps "Je sais le faire". Videos go in `videos/` (see `videos/README.md`), or can be added from the phone.
+5. **One technique per screen (Les leçons / الدروس)**: 12 lessons, big numbered steps, a slow looping video and a "Revoir" (show me again) button. The pattern abbreviation (for example *m. end.*) stays hidden until she taps "Je sais le faire". Each lesson plays a French YouTube beginner video in the app (official YouTube player, needs internet). Own videos in `videos/` replace them and work offline (see `videos/README.md`).
 6. **"Est-ce juste ?" photo check**: she photographs her knitting, then answers one question at a time, comparing with drawings of a correct stitch and the mistake: dropped stitch, twisted stitch, accidental hole, wrong stitch count, rolling edges (normal). Each "yes" shows how to fix it. No AI: free and offline.
 7. **Voice row counter**: "Compter à la voix" on the counter screen. She says "suivant" (or "زيد" / "التالي") to add a row and "annuler" (or "رجع") to undo; the phone says the new number out loud. Needs internet and Chrome.
 8. **Three starter projects**: a dishcloth, then a scarf, then a simple hat. Each unlocks when the previous project is marked "Terminé".
@@ -137,7 +137,7 @@ Each step is shown to her before starting the next one. Her feedback matters mor
 ## 6. Content to prepare with her
 
 - ~~Default language~~ → French by default, Arabic available
-- Short videos of each technique (see `videos/README.md`)
+- Check the YouTube videos with her; swap any she finds hard to follow (see `videos/README.md`)
 - Later, if she decides to sell: her hourly rate target in DH and usual yarn prices
 - Her own photos of finished pieces for the portfolio
 

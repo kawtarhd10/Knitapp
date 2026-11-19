@@ -13,7 +13,7 @@ Fonctionne sur téléphone, sans internet, sans compte, gratuitement.
   - L'écran reste allumé pendant le comptage.
 - **Compter à la voix** : dire « suivant » (ou « زيد ») pour ajouter un rang, « annuler » (ou « رجع ») pour corriger. Fonctionne avec Chrome et internet.
 - **Apprendre** :
-  - **Les leçons** : une technique par écran, une vidéo au ralenti qui tourne en boucle, le bouton « Revoir ».
+  - **Les leçons** : une technique par écran, une vidéo YouTube au ralenti qui tourne en boucle (il faut internet), le bouton « Revoir ».
     Le mot utilisé dans les modèles (ex. « m. end. ») n'apparaît qu'une fois la technique apprise.
   - **Mes 3 premiers projets** : une lavette, puis une écharpe, puis un bonnet. Chacun se débloque quand le précédent est « Terminé ».
   - **Est-ce juste ?** : prendre son tricot en photo, puis le comparer avec des dessins des erreurs fréquentes, avec la façon de les réparer.
@@ -28,7 +28,8 @@ Fonctionne sur téléphone, sans internet, sans compte, gratuitement.
 
 ## Ajouter les vidéos des leçons
 
-Voir [videos/README.md](videos/README.md) : noms des fichiers et conseils pour filmer.
+Les leçons utilisent des vidéos YouTube en français. On peut les remplacer par ses propres vidéos :
+voir [videos/README.md](videos/README.md).
 
 ## Installer sur le téléphone
 

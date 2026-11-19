@@ -6,6 +6,24 @@ import { getLearned, setLearned, starterStates } from '../progress.js';
 
 const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
 const SLOW = 0.6;
+const YT_SLOW = 0.5; // YouTube only allows 0.25, 0.5, 0.75, 1…
+
+// Loads YouTube's official player once (needs internet).
+let ytApi = null;
+function loadYouTubeApi() {
+  if (window.YT?.Player) return Promise.resolve(window.YT);
+  if (!ytApi) {
+    ytApi = new Promise((resolve, reject) => {
+      const timer = setTimeout(() => { ytApi = null; reject(new Error('timeout')); }, 15000);
+      window.onYouTubeIframeAPIReady = () => { clearTimeout(timer); resolve(window.YT); };
+      const script = document.createElement('script');
+      script.src = 'https://www.youtube.com/iframe_api';
+      script.onerror = () => { clearTimeout(timer); script.remove(); ytApi = null; reject(new Error('load')); };
+      document.head.append(script);
+    });
+  }
+  return ytApi;
+}
 
 const L = (item) => item[getLang()] || item.fr;
 
@@ -91,9 +109,11 @@ export async function renderLesson(el, id) {
 
     <div class="video-box">
       <video muted loop playsinline preload="auto" hidden></video>
+      <div class="yt-slot" hidden><div></div></div>
       <div class="video-empty" hidden>
         <span aria-hidden="true">🎬</span>
-        <p>${esc(t('lesson.noVideo'))}</p>
+        <p></p>
+        ${lesson.youtube ? `<a class="btn btn-small" target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=${esc(lesson.youtube)}" hidden>▶ ${esc(t('lesson.openYoutube'))}</a>` : ''}
       </div>
     </div>
     <div class="video-controls">
@@ -136,21 +156,80 @@ export async function renderLesson(el, id) {
   `;
 
   const video = el.querySelector('video');
+  const ytSlot = el.querySelector('.yt-slot');
   const empty = el.querySelector('.video-empty');
+  const emptyText = empty.querySelector('p');
+  const emptyLink = empty.querySelector('a');
   const speedBtn = el.querySelector('[data-action=speed]');
   const removeBtn = el.querySelector('[data-action=remove-video]');
   let slow = true;
   let objectUrl = null;
+  let yt = null; // YouTube player, when the lesson uses a YouTube video
+  let gone = false; // the screen was left
 
   const showSpeed = () => {
     speedBtn.textContent = slow ? `🐇 ${t('lesson.normalSpeed')}` : `🐢 ${t('lesson.slower')}`;
     video.playbackRate = slow ? SLOW : 1;
+    try { yt?.setPlaybackRate(slow ? YT_SLOW : 1); } catch { /* player not ready */ }
   };
+
+  const showMessage = (message, withLink = false) => {
+    video.hidden = true;
+    ytSlot.hidden = true;
+    empty.hidden = false;
+    emptyText.textContent = message;
+    if (emptyLink) emptyLink.hidden = !withLink;
+  };
+
+  function stopYouTube() {
+    try { yt?.destroy(); } catch { /* ignore */ }
+    yt = null;
+    ytSlot.replaceChildren(document.createElement('div'));
+  }
+
+  async function showYouTube() {
+    if (!navigator.onLine) {
+      showMessage(t('lesson.needInternet'), false);
+      return;
+    }
+    let YT;
+    try {
+      YT = await loadYouTubeApi();
+    } catch {
+      showMessage(t('lesson.needInternet'), false);
+      return;
+    }
+    if (gone) return;
+    video.hidden = true;
+    empty.hidden = true;
+    ytSlot.hidden = false;
+    yt = new YT.Player(ytSlot.firstElementChild, {
+      videoId: lesson.youtube,
+      host: 'https://www.youtube-nocookie.com',
+      playerVars: {
+        autoplay: 1, mute: 1, loop: 1, playlist: lesson.youtube, playsinline: 1, rel: 0, controls: 1,
+        hl: getLang(), cc_lang_pref: 'fr',
+      },
+      events: {
+        onReady: (e) => {
+          showSpeed();
+          e.target.playVideo();
+        },
+        // The video was removed or its owner does not allow it inside other apps.
+        onError: () => {
+          stopYouTube();
+          showMessage(t('lesson.videoUnavailable'), true);
+        },
+      },
+    });
+  }
 
   async function loadVideo() {
     if (objectUrl) URL.revokeObjectURL(objectUrl);
     objectUrl = null;
-    // 1. A video added on this phone; 2. the video shipped with the app (videos/<id>.mp4).
+    stopYouTube();
+    // 1. A video added on this phone; 2. the video shipped with the app (videos/<id>.mp4);
+    // 3. the YouTube video chosen for this lesson.
     const local = await db.videos.get(lesson.id).catch(() => null);
     removeBtn.hidden = !local;
     let blob = local?.blob;
@@ -160,14 +239,16 @@ export async function renderLesson(el, id) {
         if (res.ok && (res.headers.get('content-type') || '').startsWith('video')) blob = await res.blob();
       } catch { /* offline and not cached yet */ }
     }
+    if (gone) return;
     if (!blob) {
-      video.hidden = true;
-      empty.hidden = false;
+      if (lesson.youtube) showYouTube();
+      else showMessage(t('lesson.noVideo'));
       return;
     }
     objectUrl = URL.createObjectURL(blob);
     video.src = objectUrl;
     video.hidden = false;
+    ytSlot.hidden = true;
     empty.hidden = true;
     showSpeed();
     video.play().catch(() => {});
@@ -175,6 +256,10 @@ export async function renderLesson(el, id) {
 
   video.addEventListener('loadedmetadata', showSpeed);
   el.querySelector('[data-action=again]').addEventListener('click', () => {
+    if (yt) {
+      try { yt.seekTo(0, true); yt.playVideo(); } catch { /* not ready */ }
+      return;
+    }
     video.currentTime = 0;
     video.play().catch(() => {});
   });
@@ -206,7 +291,9 @@ export async function renderLesson(el, id) {
   showSpeed();
   loadVideo();
   return () => {
+    gone = true;
     video.pause();
+    stopYouTube();
     if (objectUrl) URL.revokeObjectURL(objectUrl);
   };
 }
