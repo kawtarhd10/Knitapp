@@ -1,0 +1,155 @@
+# Knit App — Project Plan
+
+A simple, friendly knitting app for a beginner knitter in Salé, Morocco who wants to grow into selling her work professionally.
+
+- **Languages:** French (default) and Arabic (full right-to-left layout), switchable with one tap
+- **Device:** her phone first (works on a computer too)
+- **Cost:** free. Hosted on GitHub Pages, no app store, no account, no ads
+- **Works offline:** once opened, it works without internet
+
+---
+
+## 1. Who it's for
+
+| Fact | What it means for the app |
+|---|---|
+| Beginner, practising for about 2 months | Plain words, a stitch glossary, guided steps, no knitting jargon left unexplained |
+| Already owns tools | Inventory of what she has, so she knows what fits each project |
+| Wants to go professional | Orders, clients, price calculator in **dirhams (DH)**, photo portfolio |
+| Lives in Salé, Morocco | French + Arabic, DH currency, sharing to WhatsApp and Instagram |
+| Not a tech user | Big buttons, icons with every label, at most 3 taps to anything, nothing to install from a store |
+
+---
+
+## 2. Technical choices
+
+**Progressive Web App (PWA)** built with plain HTML, CSS and JavaScript.
+
+- **Why a PWA:** she opens a link once, taps "Add to home screen", and it behaves like a normal app with its own icon. No Play Store, no build tools, easy to update from GitHub.
+- **Hosting:** GitHub Pages from this repository (free, HTTPS).
+- **Storage:** everything stays on her phone (IndexedDB for projects and photos). No server, no login, nothing leaves the phone.
+- **Backup:** "Export my data" button that produces a file she can send to herself on WhatsApp or save to Google Drive, plus "Import" to restore it on a new phone. *(Important: without this, a lost phone means lost data.)*
+- **Translations:** one file per language (`fr.json`, `ar.json`); the Arabic version flips the layout with `dir="rtl"`.
+- **Fonts:** a font that handles both Latin and Arabic well (for example Noto Sans + Noto Sans Arabic). Large default text size.
+
+### Folder structure
+
+```
+Knitapp/
+├── index.html
+├── manifest.json        # app name, icon, colors (for "Add to home screen")
+├── sw.js                # service worker (offline mode)
+├── css/style.css
+├── js/
+│   ├── app.js           # navigation between screens
+│   ├── db.js            # saving data on the phone
+│   ├── i18n.js          # French / Arabic switching
+│   ├── projects.js
+│   ├── counter.js
+│   ├── calculators.js
+│   └── business.js
+├── lang/
+│   ├── fr.json
+│   └── ar.json
+├── data/stitches.json   # stitch glossary content
+└── icons/
+```
+
+---
+
+## 3. Features, in build order
+
+### Phase 1: Everyday knitting (the first version she uses)
+
+1. **My projects (Mes projets / مشاريعي)**
+   - Create a project: name, photo, yarn used, needle size, start date, notes
+   - Status: idea → in progress → finished → sold
+   - Add progress photos
+2. **Row counter (Compteur de rangs / عداد الصفوف)**
+   - One giant "+1" button, plus "−1" and reset
+   - One counter per project, saved automatically
+   - Optional second counter (for repeats, for example "every 6 rows, decrease")
+   - Screen stays on while counting; small vibration on each tap
+3. **Language switch** FR ⇄ AR on every screen
+4. **Install and offline**: home-screen icon, works without internet
+
+### Phase 2: Learning and tools
+
+5. **Stitch glossary (Lexique des points / معجم الغرز)**
+   - Basics: montage, maille endroit, maille envers, côtes 1/1 and 2/2, point mousse, jersey, augmentations, diminutions, rabattre
+   - Each entry: French name, Arabic name, common pattern abbreviation (and English abbreviation, since many patterns online are in English), short explanation, link to a good tutorial video
+6. **My tools and yarn (Mon matériel / أدواتي)**
+   - Needles (size in mm, type: straight, circular, double-pointed), crochet hooks, accessories
+   - Yarn stash: colour, fibre (acrylique, laine, coton), weight, quantity, where it was bought and the price
+   - The project form suggests matching needles from what she already owns
+7. **Calculators**
+   - **Gauge (échantillon):** "I have X stitches and Y rows in 10 cm" → how many stitches to cast on for a given width
+   - **Yarn needed:** estimate the number of balls from a finished size
+   - **Size conversion:** needle mm ⇄ US sizes (for English-language patterns)
+8. **Skills checklist (Mon parcours / مساري)**
+   - A beginner-to-confident path: scarf → hat → baby items → cardigan → pieces with patterns
+   - She ticks skills off as she learns them; motivating and shows her progress
+
+### Phase 3: Selling professionally
+
+9. **Price calculator (Calcul du prix / حساب الثمن)**
+   - Yarn cost + other materials + (hours × her hourly rate) + margin = suggested price in DH
+   - A timer on each project to record real hours spent, so prices are based on facts, not guesses
+10. **Orders and clients (Commandes / الطلبيات)**
+    - Client name, phone, what was ordered, size, colour, price, **deposit received (avance)**, delivery date
+    - "Contact on WhatsApp" button that opens a chat with the client
+    - List of upcoming deadlines on the home screen
+11. **Portfolio (Mes créations / إبداعاتي)**
+    - Gallery of finished pieces with photo, price and description
+    - Share button to send to WhatsApp, Instagram or Facebook
+12. **Simple money tracking**
+    - Income per month (sold pieces) minus expenses (yarn, tools) = profit
+    - Shows which items are the most profitable
+
+### Later ideas (only if useful)
+
+- Sync between phone and computer (would need an online service, adds complexity)
+- Pattern library with her own written patterns
+- Printable price list or catalogue as PDF
+
+---
+
+## 4. Milestones
+
+| Step | Content | Result |
+|---|---|---|
+| 1 | Skeleton: navigation, FR/AR switch, design, install on phone | She can open and install the app |
+| 2 | Projects + row counter + backup/export | **First usable version, she tests it** |
+| 3 | Glossary, tools inventory, calculators, skills path | Helps her learn and plan |
+| 4 | Price calculator, orders, portfolio, money tracking | Ready for selling |
+| 5 | Polish from her feedback | Adjust words, button sizes, what she actually uses |
+
+Each step is shown to her before starting the next one. Her feedback matters more than the plan.
+
+---
+
+## 5. Design rules
+
+- Large text (at least 18px), large buttons (at least 48px tall)
+- Every button has an icon **and** a word
+- Warm, calm colours (wool-like tones: cream, terracotta, sage green), good contrast
+- Bottom navigation with 4 tabs: **Projets · Compteur · Apprendre · Vente**
+- Confirmation before deleting anything
+- Every screen checked in Arabic (right-to-left) as well as French
+
+---
+
+## 6. Content to prepare with her
+
+- Which language she prefers by default (French or Arabic; Darija wording for some labels?)
+- Her hourly rate target in DH and usual yarn prices where she buys (to prefill the price calculator)
+- What she plans to sell first (baby clothes, scarves, bags, home decor…), which decides which examples and patterns to include
+- Her own photos of finished pieces for the portfolio
+
+---
+
+## 7. Practical tips for the business side (outside the app)
+
+- **Selling channels** commonly used in Morocco: Instagram, WhatsApp Business (catalogue feature), Facebook Marketplace and groups, Avito, local craft fairs and bazaars
+- **Legal status:** Morocco's *auto-entrepreneur* status is designed for small independent activity like this; worth checking the current conditions on the official auto-entrepreneur portal or at a Barid Al-Maghrib office before selling regularly
+- **Pricing:** always ask for a deposit (avance) on custom orders, since yarn is bought in advance
