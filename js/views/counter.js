@@ -2,6 +2,24 @@ import * as db from '../db.js';
 import { t, getLang } from '../i18n.js';
 import { esc, settings, vibrate, toast } from '../util.js';
 
+const PENDING = 'pendingRows.';
+
+// If the app was closed right after a tap, the last count waits in localStorage: save it now.
+export async function savePendingCounts() {
+  for (const key of settings.keys(PENDING)) {
+    try {
+      const { rows, at } = JSON.parse(settings.get(key));
+      const p = await db.projects.get(key.slice(PENDING.length));
+      if (p && (!p.updatedAt || at >= p.updatedAt)) {
+        p.rows = rows;
+        p.updatedAt = at;
+        await db.projects.put(p);
+      }
+    } catch { /* ignore a damaged entry */ }
+    settings.remove(key);
+  }
+}
+
 export async function renderCounter(el, id) {
   // "#/counter" reopens the last project; "#/counter/choose" shows the list.
   const projectId = id === 'choose' ? null : (id || settings.get('lastProject'));
@@ -76,7 +94,11 @@ export async function renderCounter(el, id) {
 
   async function save() {
     p.updatedAt = new Date().toISOString();
+    // Written at once, so a row counted just before the app closes is not lost.
+    const pending = JSON.stringify({ rows: p.rows || 0, at: p.updatedAt });
+    settings.set(PENDING + p.id, pending);
     await db.projects.put(p);
+    if (settings.get(PENDING + p.id) === pending) settings.remove(PENDING + p.id);
   }
 
   function change(delta) {

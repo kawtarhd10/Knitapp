@@ -57,7 +57,7 @@ const go = async (page, hash) => {
 };
 
 // In a sandbox with an HTTPS proxy (like Claude's cloud sessions), the browser goes through it.
-const browser = await chromium.launch(process.env.HTTPS_PROXY ? { proxy: { server: process.env.HTTPS_PROXY } } : {});
+const browser = await chromium.launch(process.env.HTTPS_PROXY ? { proxy: { server: process.env.HTTPS_PROXY, bypass: 'localhost,127.0.0.1' } } : {});
 const { ctx, page } = await newPhone(browser);
 
 console.log(`Site : ${URL}\n\nJour 1 : découverte`);

@@ -1,6 +1,6 @@
 import { applyLang, getLang, setLang } from './i18n.js';
 import { renderProjectList, renderProject, renderProjectForm } from './views/projects.js';
-import { renderCounter } from './views/counter.js';
+import { renderCounter, savePendingCounts } from './views/counter.js';
 import { renderSettings } from './views/settings.js';
 import { renderLearn, renderLessonList, renderLesson, renderStarters, renderStarter } from './views/learn.js';
 import { renderCheck } from './views/check.js';
@@ -62,7 +62,7 @@ document.addEventListener('refresh', () => render({ keepScroll: true }));
 window.addEventListener('hashchange', () => render());
 
 applyLang();
-render();
+savePendingCounts().catch(() => {}).finally(() => render());
 
 // Ask the browser to keep our data even if the phone runs low on space.
 navigator.storage?.persist?.().catch(() => {});

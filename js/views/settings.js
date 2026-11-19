@@ -3,7 +3,7 @@ import { t, getLang, setLang, locale } from '../i18n.js';
 import { esc, settings, toast, formatDate, todayISO } from '../util.js';
 import { getFamily, setFamily } from '../family.js';
 
-export const APP_VERSION = '1.2.1';
+export const APP_VERSION = '1.2.2';
 
 export async function renderSettings(el) {
   const family = await getFamily();

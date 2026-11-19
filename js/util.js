@@ -37,6 +37,14 @@ export const settings = {
   set(key, value) {
     try { localStorage.setItem(`tricot.${key}`, value); } catch { /* storage unavailable */ }
   },
+  remove(key) {
+    try { localStorage.removeItem(`tricot.${key}`); } catch { /* storage unavailable */ }
+  },
+  keys(prefix) {
+    try {
+      return Object.keys(localStorage).filter((k) => k.startsWith(`tricot.${prefix}`)).map((k) => k.slice(7));
+    } catch { return []; }
+  },
 };
 
 // Shrinks a photo so it doesn't fill the phone: returns a JPEG data URL.
