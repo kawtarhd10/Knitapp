@@ -5,6 +5,8 @@ export const STARTERS = [
     id: 'dishcloth',
     emoji: '🧽',
     needles: '4',
+    // Nombres du modèle, vérifiés par tests/content-check.js
+    knit: { castOn: 38, rows: 65 },
     lessons: ['cast-on', 'knit', 'garter', 'bind-off', 'weave-ends'],
     fr: {
       name: 'Une lavette',
@@ -15,9 +17,9 @@ export const STARTERS = [
         'Une aiguille à laine et des ciseaux',
       ],
       steps: [
-        'Montez 35 mailles.',
+        'Montez 38 mailles.',
         'Tricotez tous les rangs en maille endroit (point mousse).',
-        'Continuez jusqu’à avoir un carré : pliez un coin en triangle. Si le bord touche l’autre coin, c’est carré (environ 70 rangs).',
+        'Continuez jusqu’à avoir un carré : pliez un coin en triangle. Si le bord touche l’autre coin, c’est carré (environ 65 rangs).',
         'Rabattez toutes les mailles.',
         'Cachez les deux bouts de fil.',
       ],
@@ -31,9 +33,9 @@ export const STARTERS = [
         'إبرة صوف ومقص',
       ],
       steps: [
-        'ركّبي 35 غرزة.',
+        'ركّبي 38 غرزة.',
         'احيكي كل الصفوف بالغرزة السادة (غرزة موس).',
-        'استمري حتى يصبح مربعاً: اطوي زاوية على شكل مثلث. إذا وصلت الحافة إلى الزاوية الأخرى فهو مربع (حوالي 70 صفاً).',
+        'استمري حتى يصبح مربعاً: اطوي زاوية على شكل مثلث. إذا وصلت الحافة إلى الزاوية الأخرى فهو مربع (حوالي 65 صفاً).',
         'اقفلي كل الغرز.',
         'أخفي طرفي الخيط.',
       ],
@@ -43,6 +45,7 @@ export const STARTERS = [
     id: 'scarf',
     emoji: '🧣',
     needles: '5',
+    knit: { castOn: 30, rib: [2, 2] },
     lessons: ['purl', 'rib-2x2', 'new-ball', 'dropped'],
     fr: {
       name: 'Une écharpe',
@@ -83,6 +86,7 @@ export const STARTERS = [
     id: 'hat',
     emoji: '🧢',
     needles: '5',
+    knit: { castOn: 90, rib: [2, 2], decrease: { repeats: 10, firstKnit: 7 } },
     lessons: ['stockinette', 'k2tog', 'seaming'],
     fr: {
       name: 'Un bonnet simple',

@@ -1,6 +1,6 @@
 // Offline mode: keeps a copy of the app on the phone.
 // Change VERSION whenever app files change, so phones download the new version.
-const VERSION = 'v1.2.0';
+const VERSION = 'v1.2.1';
 const CACHE = `mon-tricot-${VERSION}`;
 const VIDEO_CACHE = 'mon-tricot-videos'; // not tied to VERSION: videos survive app updates
 const FILES = [

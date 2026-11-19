@@ -275,7 +275,7 @@ export const LESSONS = [
   },
   {
     id: 'k2tog',
-    youtube: 'I6gtGl5sKwU', // Débuter le tricot : 2 mailles ensemble à l’endroit
+    youtube: 'dScfnHGvnI0', // Un Amour de Laine : 2 mailles ensemble à l’endroit
     term: { fr: '2 m. ens.', en: 'k2tog' },
     fr: {
       name: 'Diminuer : 2 mailles ensemble',
