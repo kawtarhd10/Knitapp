@@ -1,6 +1,6 @@
 import * as db from '../db.js';
-import { t } from '../i18n.js';
-import { esc, settings, vibrate } from '../util.js';
+import { t, getLang } from '../i18n.js';
+import { esc, settings, vibrate, toast } from '../util.js';
 
 export async function renderCounter(el, id) {
   // "#/counter" reopens the last project; "#/counter/choose" shows the list.
@@ -29,6 +29,8 @@ export async function renderCounter(el, id) {
         <button type="button" class="btn counter-minus" aria-label="${esc(t('counter.remove'))}">−1</button>
         <button type="button" class="btn counter-reset">↺ ${esc(t('counter.reset'))}</button>
       </div>
+      <button type="button" class="btn btn-block voice-btn" aria-pressed="false">🎤 ${esc(t('voice.start'))}</button>
+      <p class="voice-help help" hidden></p>
     </div>
 
     <details class="counter-options">
@@ -117,8 +119,119 @@ export async function renderCounter(el, id) {
     save();
   });
 
+  const voice = setupVoice(el, () => change(1), () => change(-1), () => p.rows || 0);
+
   show();
-  return keepScreenOn();
+  const releaseScreen = keepScreenOn();
+  return () => {
+    voice.stop();
+    releaseScreen?.();
+  };
+}
+
+// ---------- Voice counting ----------
+// She says "suivant" (or "زيد" / "التالي") to add a row, "annuler" (or "رجع") to remove one.
+const WORDS = {
+  fr: {
+    next: ['suivant', 'prochain', 'plus un', 'plus 1', 'encore', 'rang'],
+    undo: ['annule', 'moins un', 'moins 1', 'retire', 'erreur'],
+  },
+  ar: {
+    next: ['زيد', 'التالي', 'تالي', 'الصف', 'صف', 'زائد'],
+    undo: ['رجع', 'ارجع', 'الغي', 'إلغاء', 'ناقص', 'نقص'],
+  },
+};
+
+function setupVoice(el, onNext, onUndo, getRows) {
+  const btn = el.querySelector('.voice-btn');
+  const help = el.querySelector('.voice-help');
+  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let listening = false;
+  let rec = null;
+
+  const update = () => {
+    btn.setAttribute('aria-pressed', String(listening));
+    btn.classList.toggle('is-listening', listening);
+    btn.textContent = listening ? `⏹ ${t('voice.stop')}` : `🎤 ${t('voice.start')}`;
+    help.hidden = !listening;
+    help.textContent = `${t('voice.listening')} ${t('voice.internet')}`;
+  };
+
+  const say = (text) => {
+    try {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = getLang() === 'ar' ? 'ar-MA' : 'fr-FR';
+      speechSynthesis.cancel();
+      speechSynthesis.speak(u);
+    } catch { /* no speech synthesis */ }
+  };
+
+  const handle = (heard) => {
+    const words = WORDS[getLang()];
+    const text = heard.toLowerCase();
+    // Both languages are accepted: many people mix French and Darija.
+    const has = (list) => list.some((w) => text.includes(w));
+    if (has(words.undo) || has(WORDS.fr.undo)) {
+      onUndo();
+      say(String(getRows()));
+    } else if (has(words.next) || has(WORDS.fr.next) || has(WORDS.ar.next)) {
+      onNext();
+      say(String(getRows()));
+    }
+  };
+
+  const start = () => {
+    rec = new Recognition();
+    rec.lang = getLang() === 'ar' ? 'ar-MA' : 'fr-FR';
+    rec.continuous = true;
+    rec.interimResults = false;
+    rec.onresult = (e) => {
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) handle(e.results[i][0].transcript);
+      }
+    };
+    rec.onerror = (e) => {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+        listening = false;
+        toast(t('voice.denied'));
+        update();
+      } else if (e.error === 'network') {
+        listening = false;
+        toast(t('voice.internet'));
+        update();
+      }
+    };
+    // Phones stop listening after a silence: start again while voice mode is on.
+    rec.onend = () => {
+      if (listening) setTimeout(() => { if (listening) { try { rec.start(); } catch { /* already started */ } } }, 300);
+    };
+    try {
+      rec.start();
+      listening = true;
+    } catch {
+      listening = false;
+    }
+    update();
+  };
+
+  const stop = () => {
+    listening = false;
+    try { rec?.abort(); } catch { /* ignore */ }
+    rec = null;
+    update();
+  };
+
+  btn.addEventListener('click', () => {
+    if (!Recognition) {
+      toast(t('voice.unsupported'));
+      return;
+    }
+    if (listening) stop();
+    else start();
+  });
+
+  update();
+  return { stop };
 }
 
 async function renderChooser(el) {

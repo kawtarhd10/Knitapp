@@ -1,8 +1,10 @@
 // Stockage local sur le téléphone (IndexedDB).
 // "projects" : les projets (légers, avec une petite miniature)
 // "photos"   : les photos en taille normale, liées à un projet
+// "meta"     : petites données (leçons apprises, contact famille)
+// "videos"   : vidéos ajoutées depuis ce téléphone (pas dans la sauvegarde, trop lourdes)
 const DB_NAME = 'mon-tricot';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 let dbPromise;
 
@@ -19,8 +21,19 @@ function open() {
           const photos = db.createObjectStore('photos', { keyPath: 'id' });
           photos.createIndex('projectId', 'projectId');
         }
+        if (!db.objectStoreNames.contains('videos')) {
+          db.createObjectStore('videos', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('meta')) {
+          db.createObjectStore('meta', { keyPath: 'key' });
+        }
       };
-      req.onsuccess = () => resolve(req.result);
+      req.onsuccess = () => {
+        const db = req.result;
+        // If a newer version of the app opens the database, let it upgrade.
+        db.onversionchange = () => { db.close(); location.reload(); };
+        resolve(db);
+      };
       req.onerror = () => reject(req.error);
     });
   }
@@ -64,26 +77,45 @@ export const photos = {
   remove: (id) => run('photos', 'readwrite', (s) => s.delete(id)),
 };
 
+export const videos = {
+  get: (id) => run('videos', 'readonly', (s) => s.get(id)),
+  put: (id, blob) => run('videos', 'readwrite', (s) => s.put({ id, blob })),
+  remove: (id) => run('videos', 'readwrite', (s) => s.delete(id)),
+};
+
+export const meta = {
+  async get(key, fallback) {
+    const row = await run('meta', 'readonly', (s) => s.get(key));
+    return row ? row.value : fallback;
+  },
+  set: (key, value) => run('meta', 'readwrite', (s) => s.put({ key, value })),
+};
+
+const STORES = ['projects', 'photos', 'meta'];
+
 export async function exportAll() {
-  const [p, ph] = await Promise.all([
-    run('projects', 'readonly', (s) => s.getAll()),
-    run('photos', 'readonly', (s) => s.getAll()),
-  ]);
-  return { app: 'mon-tricot', format: 1, exportedAt: new Date().toISOString(), projects: p, photos: ph };
+  const [p, ph, me] = await Promise.all(STORES.map((n) => run(n, 'readonly', (s) => s.getAll())));
+  return { app: 'mon-tricot', format: 2, exportedAt: new Date().toISOString(), projects: p, photos: ph, meta: me };
 }
+
+const isArrayOrMissing = (v) => v === undefined || Array.isArray(v);
 
 export function isValidBackup(data) {
   return !!data && data.app === 'mon-tricot' && Array.isArray(data.projects) && Array.isArray(data.photos)
+    && isArrayOrMissing(data.meta)
     && data.projects.every((p) => p && typeof p.id === 'string' && typeof p.name === 'string')
-    && data.photos.every((ph) => ph && typeof ph.id === 'string' && typeof ph.projectId === 'string');
+    && data.photos.every((ph) => ph && typeof ph.id === 'string' && typeof ph.projectId === 'string')
+    && (data.meta || []).every((x) => x && typeof x.key === 'string');
 }
 
 // Replaces everything on the phone with the backup content.
+// Backups from version 1 have no meta: what is on the phone is kept.
 export function importAll(data) {
-  return run(['projects', 'photos'], 'readwrite', ([p, ph]) => {
+  return run(STORES, 'readwrite', ([p, ph, me]) => {
     p.clear();
     ph.clear();
     data.projects.forEach((x) => p.put(x));
     data.photos.forEach((x) => ph.put(x));
+    if (data.meta) { me.clear(); data.meta.forEach((x) => me.put(x)); }
   });
 }

@@ -1,6 +1,7 @@
 import * as db from '../db.js';
 import { t, locale } from '../i18n.js';
 import { esc, iso, uid, todayISO, formatDate, resizeImage, toast, settings, STATUSES } from '../util.js';
+import { getFamily, familyName, shareProject } from '../family.js';
 
 let currentFilter = 'all';
 const BACKUP_REMINDER_DAYS = 30;
@@ -69,6 +70,8 @@ export async function renderProject(el, id) {
     return;
   }
   const pics = (await db.photos.forProject(id)).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  const who = familyName(await getFamily());
+  const finished = p.status === 'finished' || p.status === 'given';
 
   const info = [
     p.forWhom && [t('form.forWhom'), p.forWhom],
@@ -81,6 +84,17 @@ export async function renderProject(el, id) {
     <a class="back" href="#/projects">‹ ${esc(t('back'))}</a>
     <h1 dir="auto">${esc(p.name)}</h1>
     <p>${statusBadge(p.status)}</p>
+
+    ${finished && !p.sharedAt ? `
+      <div class="celebrate">
+        <p class="celebrate-title">${esc(t('family.celebrate'))}</p>
+        ${pics.length
+          ? `<button type="button" class="btn btn-primary btn-block btn-big" data-action="share">📤 ${esc(t('family.sendFinished', { name: iso(who) }))}</button>`
+          : `<p>${esc(t('family.addPhotoFirst'))}</p>
+             <button type="button" class="btn btn-primary btn-block btn-big" data-action="add-photo">📷 ${esc(t('photos.add'))}</button>`}
+      </div>` : ''}
+
+    ${p.starterId ? `<a class="btn btn-block" href="#/learn/starter/${esc(p.starterId)}">📖 ${esc(t('starters.instructions'))}</a>` : ''}
 
     <a class="btn btn-primary btn-block btn-big" href="#/counter/${esc(p.id)}">
       🔢 ${esc(t('project.countRows'))} <span class="pill">${esc(p.rows || 0)}</span>
@@ -98,6 +112,8 @@ export async function renderProject(el, id) {
         <span>${esc(t('photos.add'))}</span>
       </label>
     </div>
+
+    <button type="button" class="btn btn-block" data-action="share">📤 ${esc(t('family.share', { name: iso(who) }))}</button>
 
     <div class="actions">
       <a class="btn" href="#/project/${esc(p.id)}/edit">✏️ ${esc(t('edit'))}</a>
@@ -120,6 +136,16 @@ export async function renderProject(el, id) {
       toast(t('photos.error'));
     }
   });
+
+  el.querySelectorAll('[data-action=share]').forEach((b) => b.addEventListener('click', async () => {
+    const sent = await shareProject(p);
+    if (sent && finished && !p.sharedAt) {
+      p.sharedAt = new Date().toISOString();
+      await db.projects.put(p);
+      renderProject(el, id);
+    }
+  }));
+  el.querySelector('[data-action=add-photo]')?.addEventListener('click', () => el.querySelector('.photo-add input').click());
 
   el.querySelectorAll('[data-photo]').forEach((b) => b.addEventListener('click', () => {
     const ph = pics.find((x) => x.id === b.dataset.photo);

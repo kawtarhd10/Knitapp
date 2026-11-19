@@ -1,10 +1,12 @@
 import * as db from '../db.js';
 import { t, getLang, setLang, locale } from '../i18n.js';
 import { esc, settings, toast, formatDate, todayISO } from '../util.js';
+import { getFamily, setFamily } from '../family.js';
 
-export const APP_VERSION = '1.0.0';
+export const APP_VERSION = '1.1.0';
 
-export function renderSettings(el) {
+export async function renderSettings(el) {
+  const family = await getFamily();
   const last = settings.get('lastBackup');
   const installed = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
   const lang = getLang();
@@ -18,6 +20,20 @@ export function renderSettings(el) {
         <button type="button" class="chip chip-big" data-lang="fr" lang="fr" aria-pressed="${lang === 'fr'}">Français</button>
         <button type="button" class="chip chip-big" data-lang="ar" lang="ar" aria-pressed="${lang === 'ar'}">العربية</button>
       </div>
+    </section>
+
+    <section class="panel">
+      <h2>👨‍👩‍👧 ${esc(t('settings.family'))}</h2>
+      <p>${esc(t('settings.familyHelp'))}</p>
+      <form class="form" data-form="family">
+        <label>${esc(t('settings.familyName'))}
+          <input name="name" maxlength="40" value="${esc(family.name)}" placeholder="${esc(t('settings.familyNamePh'))}">
+        </label>
+        <label>${esc(t('settings.familyPhone'))}
+          <input name="phone" type="tel" inputmode="tel" maxlength="20" dir="ltr" value="${esc(family.phone)}" placeholder="+212 6 12 34 56 78">
+        </label>
+        <button type="submit" class="btn btn-primary">✓ ${esc(t('save'))}</button>
+      </form>
     </section>
 
     <section class="panel">
@@ -50,6 +66,13 @@ export function renderSettings(el) {
     setLang(b.dataset.lang);
     document.dispatchEvent(new Event('langchange'));
   }));
+
+  el.querySelector('[data-form=family]').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    await setFamily({ name: String(f.get('name')).trim(), phone: String(f.get('phone')).trim() });
+    toast(t('settings.familySaved'));
+  });
 
   el.querySelector('[data-action=export]').addEventListener('click', () => exportBackup(el));
 

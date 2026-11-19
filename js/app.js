@@ -2,6 +2,8 @@ import { applyLang, getLang, setLang } from './i18n.js';
 import { renderProjectList, renderProject, renderProjectForm } from './views/projects.js';
 import { renderCounter } from './views/counter.js';
 import { renderSettings } from './views/settings.js';
+import { renderLearn, renderLessonList, renderLesson, renderStarters, renderStarter } from './views/learn.js';
+import { renderCheck } from './views/check.js';
 
 const routes = [
   { re: /^#\/(projects)?$/, tab: 'projects', view: () => renderProjectList },
@@ -9,6 +11,12 @@ const routes = [
   { re: /^#\/project\/([\w-]+)\/edit$/, tab: 'projects', view: (m) => (main) => renderProjectForm(main, m[1]) },
   { re: /^#\/project\/([\w-]+)$/, tab: 'projects', view: (m) => (main) => renderProject(main, m[1]) },
   { re: /^#\/counter(?:\/([\w-]+))?$/, tab: 'counter', view: (m) => (main) => renderCounter(main, m[1]) },
+  { re: /^#\/learn$/, tab: 'learn', view: () => renderLearn },
+  { re: /^#\/learn\/lessons$/, tab: 'learn', view: () => renderLessonList },
+  { re: /^#\/learn\/lesson\/([\w-]+)$/, tab: 'learn', view: (m) => (main) => renderLesson(main, m[1]) },
+  { re: /^#\/learn\/starters$/, tab: 'learn', view: () => renderStarters },
+  { re: /^#\/learn\/starter\/([\w-]+)$/, tab: 'learn', view: (m) => (main) => renderStarter(main, m[1]) },
+  { re: /^#\/learn\/check$/, tab: 'learn', view: () => renderCheck },
   { re: /^#\/settings$/, tab: 'settings', view: () => renderSettings },
 ];
 
@@ -16,7 +24,7 @@ const main = document.getElementById('view');
 let cleanup = null;
 let renderId = 0;
 
-async function render() {
+async function render({ keepScroll = false } = {}) {
   const hash = location.hash || '#/projects';
   let match = null;
   const route = routes.find((r) => (match = hash.match(r.re))) || routes[0];
@@ -39,17 +47,19 @@ async function render() {
     return; // a newer navigation happened while loading
   }
   cleanup = result;
+  const y = window.scrollY;
   main.replaceChildren(fresh);
-  window.scrollTo(0, 0);
+  window.scrollTo(0, keepScroll ? y : 0);
 }
 
 document.getElementById('lang-toggle').addEventListener('click', () => {
   setLang(getLang() === 'ar' ? 'fr' : 'ar');
-  render();
+  render({ keepScroll: true });
 });
-document.addEventListener('langchange', render);
+document.addEventListener('langchange', () => render({ keepScroll: true }));
+document.addEventListener('refresh', () => render({ keepScroll: true }));
 
-window.addEventListener('hashchange', render);
+window.addEventListener('hashchange', () => render());
 
 applyLang();
 render();

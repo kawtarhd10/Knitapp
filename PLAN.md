@@ -71,22 +71,19 @@ Knitapp/
 3. **Language switch** FR ⇄ AR on every screen
 4. **Install and offline**: home-screen icon, works without internet
 
-### Phase 2: Learning and tools
+### Phase 2: Learning ✅ done (v1.1.0)
 
-5. **Stitch glossary (Lexique des points / معجم الغرز)**
-   - Basics: montage, maille endroit, maille envers, côtes 1/1 and 2/2, point mousse, jersey, augmentations, diminutions, rabattre
-   - Each entry: French name, Arabic name, common pattern abbreviation (and English abbreviation, since many patterns online are in English), short explanation, link to a good tutorial video
-6. **My tools and yarn (Mon matériel / أدواتي)**
-   - Needles (size in mm, type: straight, circular, double-pointed), crochet hooks, accessories
-   - Yarn stash: colour, fibre (acrylique, laine, coton), weight, quantity, where it was bought and the price
-   - The project form suggests matching needles from what she already owns
-7. **Calculators**
-   - **Gauge (échantillon):** "I have X stitches and Y rows in 10 cm" → how many stitches to cast on for a given width
-   - **Yarn needed:** estimate the number of balls from a finished size
-   - **Size conversion:** needle mm ⇄ US sizes (for English-language patterns)
-8. **Skills checklist (Mon parcours / مساري)**
-   - A beginner-to-confident path: scarf → hat → baby items → cardigan → pieces with patterns
-   - She ticks skills off as she learns them; motivating and shows her progress
+5. **One technique per screen (Les leçons / الدروس)**: 12 lessons, big numbered steps, a slow looping video and a "Revoir" (show me again) button. The pattern abbreviation (for example *m. end.*) stays hidden until she taps "Je sais le faire". Videos go in `videos/` (see `videos/README.md`), or can be added from the phone.
+6. **"Est-ce juste ?" photo check**: she photographs her knitting, then answers one question at a time, comparing with drawings of a correct stitch and the mistake: dropped stitch, twisted stitch, accidental hole, wrong stitch count, rolling edges (normal). Each "yes" shows how to fix it. No AI: free and offline.
+7. **Voice row counter**: "Compter à la voix" on the counter screen. She says "suivant" (or "زيد" / "التالي") to add a row and "annuler" (or "رجع") to undo; the phone says the new number out loud. Needs internet and Chrome.
+8. **Three starter projects**: a dishcloth, then a scarf, then a simple hat. Each unlocks when the previous project is marked "Terminé".
+9. **Family mode**: a family member's name and WhatsApp number in Settings. When a project is finished, a "Bravo !" card offers to send the photo on WhatsApp. A "Montrer à …" button shares progress any time.
+
+### Later, if she wants them
+
+- Tools and yarn list, linked to projects
+- Calculators: stitches to cast on from a swatch, yarn quantity, needle size conversion
+- More projects after the hat (baby items, a cardigan)
 
 ### Phase 3 (later, only when she wants to sell): Selling
 
@@ -118,7 +115,7 @@ Knitapp/
 |---|---|---|
 | 1 | Skeleton: navigation, FR/AR switch, design, install on phone | She can open and install the app ✅ done |
 | 2 | Projects + row counter + backup/export | **First usable version, she tests it** ✅ done (v1.0.0) |
-| 3 | Glossary, tools inventory, calculators, skills path | Helps her learn and plan |
+| 3 | Lessons with videos, photo check, voice counter, 3 starter projects, family mode | Helps her learn ✅ done (v1.1.0) |
 | 4 | Price calculator, orders, portfolio, money tracking | Ready for selling |
 | 5 | Polish from her feedback | Adjust words, button sizes, what she actually uses |
 
@@ -131,7 +128,7 @@ Each step is shown to her before starting the next one. Her feedback matters mor
 - Large text (at least 18px), large buttons (at least 48px tall)
 - Every button has an icon **and** a word
 - Warm, calm colours (wool-like tones: cream, terracotta, sage green), good contrast
-- Bottom navigation: **Projets · Compteur · Réglages** now; **Apprendre** is added in phase 2
+- Bottom navigation: **Projets · Compteur · Apprendre · Réglages**
 - Confirmation before deleting anything
 - Every screen checked in Arabic (right-to-left) as well as French
 
@@ -140,7 +137,7 @@ Each step is shown to her before starting the next one. Her feedback matters mor
 ## 6. Content to prepare with her
 
 - ~~Default language~~ → French by default, Arabic available
-- What she wants to knit next (scarves, hats, baby clothes…), which decides the examples and the skills path in phase 2
+- Short videos of each technique (see `videos/README.md`)
 - Later, if she decides to sell: her hourly rate target in DH and usual yarn prices
 - Her own photos of finished pieces for the portfolio
 

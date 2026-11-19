@@ -3,7 +3,7 @@
 Application simple pour suivre ses tricots, en **français** (par défaut) et en **arabe**.
 Fonctionne sur téléphone, sans internet, sans compte, gratuitement.
 
-## Ce que fait la version 1
+## Ce que fait l'application
 
 - **Mes projets** : nom, pour qui, laine, taille des aiguilles, date de début, notes, photos.
   Étapes : Idée → En cours → Terminé → Offert.
@@ -11,12 +11,24 @@ Fonctionne sur téléphone, sans internet, sans compte, gratuitement.
   - Motif qui se répète (ex. tous les 6 rangs) : le téléphone vibre à la fin du motif.
   - Objectif de rangs avec une barre d'avancement.
   - L'écran reste allumé pendant le comptage.
+- **Compter à la voix** : dire « suivant » (ou « زيد ») pour ajouter un rang, « annuler » (ou « رجع ») pour corriger. Fonctionne avec Chrome et internet.
+- **Apprendre** :
+  - **Les leçons** : une technique par écran, une vidéo au ralenti qui tourne en boucle, le bouton « Revoir ».
+    Le mot utilisé dans les modèles (ex. « m. end. ») n'apparaît qu'une fois la technique apprise.
+  - **Mes 3 premiers projets** : une lavette, puis une écharpe, puis un bonnet. Chacun se débloque quand le précédent est « Terminé ».
+  - **Est-ce juste ?** : prendre son tricot en photo, puis le comparer avec des dessins des erreurs fréquentes, avec la façon de les réparer.
+- **Famille** : dans Réglages, le prénom et le numéro WhatsApp d'un proche. Quand un projet est terminé,
+  l'application propose de lui envoyer la photo.
 - **Français ⇄ العربية** : bouton en haut de l'écran (l'arabe s'affiche de droite à gauche).
 - **Sauvegarde** : Réglages → « Sauvegarder mes données » crée un fichier à envoyer sur WhatsApp
   ou Google Drive. « Restaurer une sauvegarde » le remet sur un nouveau téléphone.
 
 > Les projets sont gardés **uniquement sur le téléphone**. Pensez à faire une sauvegarde de temps en temps.
 > L'application le rappelle tous les 30 jours.
+
+## Ajouter les vidéos des leçons
+
+Voir [videos/README.md](videos/README.md) : noms des fichiers et conseils pour filmer.
 
 ## Installer sur le téléphone
 
@@ -43,6 +55,7 @@ python3 -m http.server 8000
 Puis ouvrir http://localhost:8000.
 
 - `lang/fr.js`, `lang/ar.js` : tous les textes de l'application
+- `js/data/` : contenu des leçons, des 3 projets et des erreurs fréquentes (français et arabe)
 - `js/views/` : un fichier par écran
 - `js/db.js` : stockage sur le téléphone (IndexedDB)
 - `sw.js` : mode hors-ligne. **Changer `VERSION` à chaque modification** pour que les téléphones
