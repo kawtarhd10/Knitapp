@@ -1,8 +1,8 @@
 # Knit App — Project Plan
 
-A simple, friendly knitting app for a beginner knitter in Salé, Morocco who wants to grow into selling her work professionally.
+A simple, friendly knitting app for a beginner knitter in Salé, Morocco. For now she knits **for family and close friends**; selling may come later, once she is confident.
 
-- **Languages:** French (default) and Arabic (full right-to-left layout), switchable with one tap
+- **Languages:** French by default, Arabic available (full right-to-left layout), switchable with one tap
 - **Device:** her phone first (works on a computer too)
 - **Cost:** free. Hosted on GitHub Pages, no app store, no account, no ads
 - **Works offline:** once opened, it works without internet
@@ -15,8 +15,8 @@ A simple, friendly knitting app for a beginner knitter in Salé, Morocco who wan
 |---|---|
 | Beginner, practising for about 2 months | Plain words, a stitch glossary, guided steps, no knitting jargon left unexplained |
 | Already owns tools | Inventory of what she has, so she knows what fits each project |
-| Wants to go professional | Orders, clients, price calculator in **dirhams (DH)**, photo portfolio |
-| Lives in Salé, Morocco | French + Arabic, DH currency, sharing to WhatsApp and Instagram |
+| Knits for family and friends for now | Each project records *who it's for*; status "Offert" (given). Selling tools are kept for later |
+| Lives in Salé, Morocco | French + Arabic, sharing to WhatsApp |
 | Not a tech user | Big buttons, icons with every label, at most 3 taps to anything, nothing to install from a store |
 
 ---
@@ -29,8 +29,8 @@ A simple, friendly knitting app for a beginner knitter in Salé, Morocco who wan
 - **Hosting:** GitHub Pages from this repository (free, HTTPS).
 - **Storage:** everything stays on her phone (IndexedDB for projects and photos). No server, no login, nothing leaves the phone.
 - **Backup:** "Export my data" button that produces a file she can send to herself on WhatsApp or save to Google Drive, plus "Import" to restore it on a new phone. *(Important: without this, a lost phone means lost data.)*
-- **Translations:** one file per language (`fr.json`, `ar.json`); the Arabic version flips the layout with `dir="rtl"`.
-- **Fonts:** a font that handles both Latin and Arabic well (for example Noto Sans + Noto Sans Arabic). Large default text size.
+- **Translations:** one file per language (`lang/fr.js`, `lang/ar.js`); the Arabic version flips the layout with `dir="rtl"`.
+- **Fonts:** the phone's own fonts (they handle French and Arabic well and need no download). Large default text size.
 
 ### Folder structure
 
@@ -44,13 +44,11 @@ Knitapp/
 │   ├── app.js           # navigation between screens
 │   ├── db.js            # saving data on the phone
 │   ├── i18n.js          # French / Arabic switching
-│   ├── projects.js
-│   ├── counter.js
-│   ├── calculators.js
-│   └── business.js
+│   ├── util.js
+│   └── views/           # one file per screen (projects, counter, settings…)
 ├── lang/
-│   ├── fr.json
-│   └── ar.json
+│   ├── fr.js
+│   └── ar.js
 ├── data/stitches.json   # stitch glossary content
 └── icons/
 ```
@@ -62,8 +60,8 @@ Knitapp/
 ### Phase 1: Everyday knitting (the first version she uses)
 
 1. **My projects (Mes projets / مشاريعي)**
-   - Create a project: name, photo, yarn used, needle size, start date, notes
-   - Status: idea → in progress → finished → sold
+   - Create a project: name, who it's for, yarn used, needle size, start date, notes, photos
+   - Status: idea → in progress → finished → given (offert)
    - Add progress photos
 2. **Row counter (Compteur de rangs / عداد الصفوف)**
    - One giant "+1" button, plus "−1" and reset
@@ -90,7 +88,7 @@ Knitapp/
    - A beginner-to-confident path: scarf → hat → baby items → cardigan → pieces with patterns
    - She ticks skills off as she learns them; motivating and shows her progress
 
-### Phase 3: Selling professionally
+### Phase 3 (later, only when she wants to sell): Selling
 
 9. **Price calculator (Calcul du prix / حساب الثمن)**
    - Yarn cost + other materials + (hours × her hourly rate) + margin = suggested price in DH
@@ -118,8 +116,8 @@ Knitapp/
 
 | Step | Content | Result |
 |---|---|---|
-| 1 | Skeleton: navigation, FR/AR switch, design, install on phone | She can open and install the app |
-| 2 | Projects + row counter + backup/export | **First usable version, she tests it** |
+| 1 | Skeleton: navigation, FR/AR switch, design, install on phone | She can open and install the app ✅ done |
+| 2 | Projects + row counter + backup/export | **First usable version, she tests it** ✅ done (v1.0.0) |
 | 3 | Glossary, tools inventory, calculators, skills path | Helps her learn and plan |
 | 4 | Price calculator, orders, portfolio, money tracking | Ready for selling |
 | 5 | Polish from her feedback | Adjust words, button sizes, what she actually uses |
@@ -133,7 +131,7 @@ Each step is shown to her before starting the next one. Her feedback matters mor
 - Large text (at least 18px), large buttons (at least 48px tall)
 - Every button has an icon **and** a word
 - Warm, calm colours (wool-like tones: cream, terracotta, sage green), good contrast
-- Bottom navigation with 4 tabs: **Projets · Compteur · Apprendre · Vente**
+- Bottom navigation: **Projets · Compteur · Réglages** now; **Apprendre** is added in phase 2
 - Confirmation before deleting anything
 - Every screen checked in Arabic (right-to-left) as well as French
 
@@ -141,14 +139,14 @@ Each step is shown to her before starting the next one. Her feedback matters mor
 
 ## 6. Content to prepare with her
 
-- Which language she prefers by default (French or Arabic; Darija wording for some labels?)
-- Her hourly rate target in DH and usual yarn prices where she buys (to prefill the price calculator)
-- What she plans to sell first (baby clothes, scarves, bags, home decor…), which decides which examples and patterns to include
+- ~~Default language~~ → French by default, Arabic available
+- What she wants to knit next (scarves, hats, baby clothes…), which decides the examples and the skills path in phase 2
+- Later, if she decides to sell: her hourly rate target in DH and usual yarn prices
 - Her own photos of finished pieces for the portfolio
 
 ---
 
-## 7. Practical tips for the business side (outside the app)
+## 7. For later: tips if she decides to sell
 
 - **Selling channels** commonly used in Morocco: Instagram, WhatsApp Business (catalogue feature), Facebook Marketplace and groups, Avito, local craft fairs and bazaars
 - **Legal status:** Morocco's *auto-entrepreneur* status is designed for small independent activity like this; worth checking the current conditions on the official auto-entrepreneur portal or at a Barid Al-Maghrib office before selling regularly

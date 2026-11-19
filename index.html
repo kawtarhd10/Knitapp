@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mon Tricot</title>
+  <meta name="description" content="Mes projets de tricot et compteur de rangs">
+  <meta name="theme-color" content="#b5532e">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="#/projects" class="brand"><span aria-hidden="true">🧶</span> <span data-i18n="appName">Mon Tricot</span></a>
+    <button type="button" id="lang-toggle" class="lang-toggle"></button>
+  </header>
+
+  <main id="view" tabindex="-1"></main>
+
+  <nav class="tabbar">
+    <a href="#/projects" data-tab="projects"><span class="tab-icon" aria-hidden="true">🧶</span><span data-i18n="nav.projects"></span></a>
+    <a href="#/counter" data-tab="counter"><span class="tab-icon" aria-hidden="true">🔢</span><span data-i18n="nav.counter"></span></a>
+    <a href="#/settings" data-tab="settings"><span class="tab-icon" aria-hidden="true">⚙️</span><span data-i18n="nav.settings"></span></a>
+  </nav>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
